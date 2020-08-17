@@ -1,1 +1,1 @@
-# hr-facebook-cf-checker
+# Facebook cf checker automation for Human Resource
