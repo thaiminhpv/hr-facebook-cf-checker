@@ -13,10 +13,9 @@ function callSpreadsheetsAPI({sheets_id, range, sheets_name, API_key}) {
             key: API_key,
             majorDimension: "COLUMNS"
         }
+    }).then(response => {
+        console.log(response.data.values);
     })
-        .then(response => {
-            console.log(response.data.values);
-        })
 }
 
 

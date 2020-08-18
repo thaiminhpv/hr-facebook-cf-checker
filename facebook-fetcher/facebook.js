@@ -8,17 +8,16 @@ async function getReplyComments(access_token, commentID) {
         params: {
             access_token: access_token
         }
-    })
-        .then(response => {
-            // return list of user commented
-            let user = []
-            response.data.data.forEach((reply_comment) => {
-                // push whole object with @Name just for debugging purpose
-                user.push(reply_comment.from)
-            })
-            console.log(response.data.data);
-            return user
+    }).then(response => {
+        // return list of user commented
+        let user = []
+        response.data.data.forEach((reply_comment) => {
+            // push whole object with @Name just for debugging purpose
+            user.push(reply_comment.from)
         })
+        console.log(response.data.data);
+        return user
+    })
 }
 
 async function getCommentsFromPostID(access_token, post_id) {
@@ -28,18 +27,17 @@ async function getCommentsFromPostID(access_token, post_id) {
         params: {
             access_token: access_token
         }
-    })
-        .then(response => {
-            // return list of IDs of comments like PR,HR,Medes,...
-            let list_id = []
-            response.data.data.forEach((department) => {
-                // FIXME: can't have permission to get other users'id except myself's id
-                list_id.push(department.id)
-            })
-            console.log('data: ', response.data.data)
-            console.log('list id', list_id)
-            return list_id
+    }).then(response => {
+        // return list of IDs of comments like PR,HR,Medes,...
+        let list_id = []
+        response.data.data.forEach((department) => {
+            // FIXME: can't have permission to get other users'id except myself's id
+            list_id.push(department.id)
         })
+        console.log('data: ', response.data.data)
+        console.log('list id', list_id)
+        return list_id
+    })
 }
 
 async function getGroupFirstPostID(access_token, group_id) {
@@ -49,11 +47,10 @@ async function getGroupFirstPostID(access_token, group_id) {
             access_token: access_token,
             // limit: 1
         }
+    }).then(response => {
+        console.log(response.data.data[3]); //3 just for debug purpose, will later change to 0
+        return response.data.data[3].id //0
     })
-        .then(response => {
-            console.log(response.data.data[3]); //3 just for debug purpose, will later change to 0
-            return response.data.data[3].id //0
-        })
 }
 
 module.exports = {getReplyComments, getCommentsFromPostID, getGroupFirstPostID}
