@@ -1,4 +1,7 @@
-console.log('It work!')
+console.log('Running')
+
+// const spreadsheet = require('./spreadsheet');
+// spreadsheet();
 
 /*
  * TODO:
@@ -6,6 +9,7 @@ console.log('It work!')
  *  2. get Facebook API query Post
  *  3. get list comments
  *  4. get list user comments (use Set (no duplicate user))
+ *  map user ID with their real name / GGSheet ID / num row
  *  5. get Google Spreadsheet API
  *  6. write code that who has been checked (API Google Spreadsheet side) with timestamp
  *  7. build CUI with 2 parameter: post ID and sheet ID
@@ -16,4 +20,5 @@ console.log('It work!')
  *  12. Count as score
  *  13. Draw charts
  *  14. Build Web service with frontend (+Express,...)
+ *  consider case that we can do all these things at Google Dev Console
  */

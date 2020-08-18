@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "google-spreadsheet": "^3.0.13",
+    "googleapis": "^39.2.0"
+  }
 }
