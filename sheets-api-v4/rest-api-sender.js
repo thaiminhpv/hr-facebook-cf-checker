@@ -18,7 +18,7 @@ const axios = require('axios');
 async function putSpreadsheetsAPI({sheets_id, range, sheets_name, API_key}, values) {
     const spreadsheetsURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheets_id}/values/${sheets_name}!${range}`;
     console.log(spreadsheetsURL)
-    return await axios.put(spreadsheetsURL,{
+    return await axios.put(spreadsheetsURL, {
         body: {
             "range": `${sheets_name}!${range}`,
             "majorDimension": "COLUMNS",
@@ -55,5 +55,44 @@ async function getSpreadsheetsAPI({sheets_id, range, sheets_name, API_key}) {
     })
 }
 
+async function getDate() {
+    let date = await new Date()
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes() + 1}:00`
+}
 
-module.exports = {getSpreadsheetsAPI, putSpreadsheetsAPI}
+async function modifySpreadsheet(array) {
+    const {GoogleSpreadsheet} = require('google-spreadsheet');
+    const {spreadsheets: {sheets_id}} = require('../config.json');
+    const credentials = require('../backup-useless/sheets-api-v3/client-secret.json');
+
+    const doc = new GoogleSpreadsheet(sheets_id);
+    await doc.useServiceAccountAuth(credentials);
+    await doc.loadInfo(); // loads document properties and worksheets
+    console.log(doc.title);
+
+    const sheet = doc.sheetsByIndex[1]; //0 is official, 1 is testing
+    console.log(sheet.title);
+    await sheet.loadCells('C4:D42')
+
+
+    const D5 = sheet.getCellByA1('D5');
+    const currentDate = await getDate();
+    // FIXME: @currentDate is raw string date format, just need to find way to convert it into Date on spreadsheet and done!
+    // consider tạo ra một sheet là queue, và có code Google App Script dequeue theo chu kỳ -> cần tìm hiểu khả năng của Google App Script
+    D5.value = currentDate
+
+    // const a1 = sheet.getCell(0, 0); // access cells using a zero-based index //absolute position
+    // const c6 = sheet.getCellByA1('C6'); // or A1 style notation
+    // console.log(c6.value);
+    // console.log(c6.formula);
+    // console.log(c6.formattedValue);
+    // c6.value = 123.456;
+    // c6.formula = '=A1';
+
+    // D5.textFormat = {numberFormat: 'DATE_TIME'};
+
+    await sheet.saveUpdatedCells(); // save all updates in one call
+}
+
+
+module.exports = {getSpreadsheetsAPI, putSpreadsheetsAPI, modifySpreadsheet}

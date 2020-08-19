@@ -16,20 +16,19 @@ function getAllCfUser() {
         .map((e) => e.innerText))];
 }
 
-async function get(url) {
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState === XMLHttpRequest.DONE) {
-            if (xmlhttp.status === 200) {
-                return xmlhttp.responseText;
-            } else {
-                throw "oops, something went wrong!";
-            }
-        }
-    };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
+async function get(URL, data) {
+    return await fetch(`${URL}?data=${JSON.stringify(data)}`)
 }
+
+async function post(URL, data) {
+    console.log(JSON.stringify(data))
+    return await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
+const link = 'http://localhost:3000/'
 
 async function run() {
     await openAllMinimized()
@@ -37,7 +36,7 @@ async function run() {
     console.log(allCfUser)
     // TODO: Post data to server here (PostAPI to GoogleSpreadsheet) Firebase first
     // post data to localhost when testing firebase
-    get('http://localhost:3000/?data=' + JSON.stringify(allCfUser))
+    get(link, allCfUser)
         .then((response => {
             console.log('response: ', response)
         }))
