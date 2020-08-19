@@ -20,7 +20,7 @@
  *  consider get extended access token (60 days) instead of 2-hour live long token
  */
 
-const {callSpreadsheetsAPI} = require('./sheets-api-v4/rest-api-sender');
+const {putSpreadsheetsAPI, getSpreadsheetsAPI} = require('./sheets-api-v4/rest-api-sender');
 const {getGroupFirstPostID, getCommentsFromPostID, getReplyComments} = require('./facebook-fetcher/facebook');
 
 const {spreadsheets, facebook} = require('./config.json');

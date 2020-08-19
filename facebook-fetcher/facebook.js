@@ -31,7 +31,7 @@ async function getCommentsFromPostID(access_token, post_id) {
         // return list of IDs of comments like PR,HR,Medes,...
         let list_id = []
         response.data.data.forEach((department) => {
-            // FIXME: can't have permission to get other users'id except myself's id
+            // ERROR: can't have permission to get other users'id except myself's id
             list_id.push(department.id)
         })
         console.log('data: ', response.data.data)

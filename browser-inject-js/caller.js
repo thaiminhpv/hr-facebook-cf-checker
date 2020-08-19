@@ -12,4 +12,5 @@ async function get(url) {
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 }
-get("path_to_inject.js").then(code => eval(code)).catch(error => console.log(error));
+// TODO: Publish - set repository to public
+get("https://raw.githubusercontent.com/thaiminhpv/hr-facebook-cf-checker/master/browser-inject-js/inject.js").then(code => eval(code)).catch(error => console.log(error));
