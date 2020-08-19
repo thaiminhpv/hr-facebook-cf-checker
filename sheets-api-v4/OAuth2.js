@@ -28,7 +28,8 @@ function authorize(credentials, callback) {
     // TODO: tạo cổng authen trên express -> store token trả về
     // TODO: sau này khi up lên firebase, consider tạo một cổng dẫn vào dường link lấy token
     const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
+        // client_id, client_secret, redirect_uris[0]);
+        client_id, client_secret, 'http://localhost:3000');
 
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
@@ -75,6 +76,7 @@ function getNewToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
 function listMajors(auth) {
+    //TODO: this work! incredible! find way to do the same things with our sheets (copy and modify, not write from scratch)
     const sheets = google.sheets({version: 'v4', auth});
     sheets.spreadsheets.values.get({
         spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
