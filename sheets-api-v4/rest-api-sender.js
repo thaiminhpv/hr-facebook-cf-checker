@@ -36,13 +36,9 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
             range: `${sheets_name}!${range}`,
             majorDimension: "COLUMNS",
         }, (err, res) => {
+            if (err) return reject('The API returned an error: ' + err)
             const rows = res.data.values;
             resolve(rows);
-            // if (rows.length) {
-            //     resolve(rows);
-            // } else {
-            //     reject('The API returned an error: ' + err)
-            // }
         });
     })
 }
@@ -54,50 +50,61 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
  * @returns {Promise<void>}
  */
 async function modifySpreadsheet(listUserCf) {
-    const {spreadsheets: {sheets_id, sheets_name, range}} = require('../resources/config.json');
-    const mapID = require('../resources/userMapID.json');
+    const {spreadsheets: {sheets_id, sheets_name, range}, map_user_id} = require('../resources/config.json');
     const peopleCount = 39;
 
     await callAPI((auth) => {
         const sheets = google.sheets({version: 'v4', auth});
 
-        //read from Sheets first to ignore existed value
-        readSpreadsheetsData(sheets, sheets_id, sheets_name, range).then(allUser => {
-            // remap user
-            let idCf = listUserCf.map((e) => mapID[e])
-            let newCf = null
-
-            let notCfYetInSheet = []
-            if (allUser !== undefined) { //null check
-                console.log(allUser[0]);
-                for (const [index, value] of allUser[0].entries()) {
-                    if (value === "") {
-                        notCfYetInSheet.push(index)
-                    }
+        //map
+        let mapID = {}
+        readSpreadsheetsData(sheets, sheets_id, map_user_id.sheets_name, map_user_id.range).then(facebookNameQueried => {
+            for (const [index, facebookName] of facebookNameQueried[0].entries()) {
+                if (facebookName !== "") {
+                    mapID[facebookName] = index
                 }
-                console.log(notCfYetInSheet);
-
-                // find the intersection between 2 array: @idCf and @notCfYetInSheet
-                newCf = idCf.filter(x => notCfYetInSheet.includes(x));
-            } else {
-                newCf = idCf
             }
-            let values = convertUserCfToWriteableTime(newCf, peopleCount);
+            console.log(mapID)
 
-            sheets.spreadsheets.values.update({
-                spreadsheetId: sheets_id,
-                range: `${sheets_name}!${range}`,
-                valueInputOption: 'USER_ENTERED',
-                resource: {
-                    // majorDimension: "COLUMNS",
-                    values: values
+            //read from Sheets first to ignore existed value
+            readSpreadsheetsData(sheets, sheets_id, sheets_name, range).then(allUser => {
+                // remap user from facebook name to id
+                let idCf = listUserCf.map((e) => mapID[e])
+
+                let newCf = null
+
+                let notCfYetInSheet = []
+                if (allUser !== undefined) { //null check
+                    console.log(allUser[0]);
+                    for (const [index, value] of allUser[0].entries()) {
+                        if (value === "") {
+                            notCfYetInSheet.push(index)
+                        }
+                    }
+                    console.log(notCfYetInSheet);
+
+                    // find the intersection between 2 array: @idCf and @notCfYetInSheet
+                    newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+                } else {
+                    newCf = idCf
                 }
-            }, (err, res) => {
-                if (err) return console.log('The API returned an error: ' + err);
-                const rows = res.data;
-                console.log('rows: ');
-                console.log(rows)
-            });
+                let values = convertUserCfToWriteableTime(newCf, peopleCount);
+
+                sheets.spreadsheets.values.update({
+                    spreadsheetId: sheets_id,
+                    range: `${sheets_name}!${range}`,
+                    valueInputOption: 'USER_ENTERED',
+                    resource: {
+                        // majorDimension: "COLUMNS",
+                        values: values
+                    }
+                }, (err, res) => {
+                    if (err) return console.log('The API returned an error: ' + err);
+                    const rows = res.data;
+                    console.log('rows: ');
+                    console.log(rows)
+                });
+            })
         }).catch(error => console.log(error));
     })
 }
