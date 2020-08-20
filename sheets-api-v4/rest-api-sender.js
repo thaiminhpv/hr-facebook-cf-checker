@@ -97,6 +97,7 @@ async function getDate() {
  */
 async function modifySpreadsheet_v4(array) {
     const {spreadsheets: {sheets_id, sheets_name, range}} = require('../config.json');
+
     await callAPI((auth) => {
         const sheets = google.sheets({version: 'v4', auth});
 
@@ -104,6 +105,7 @@ async function modifySpreadsheet_v4(array) {
         sheets.spreadsheets.values.get({
             spreadsheetId: sheets_id,
             range: `${sheets_name}!${range}`,
+            majorDimension: "COLUMNS",
         }, (err, res) => {
             if (err) return console.log('The API returned an error: ' + err);
 
@@ -111,10 +113,10 @@ async function modifySpreadsheet_v4(array) {
             if (rows.length) {
                 console.log('Name \t\t\t Major:');
                 // Print columns C and D, which correspond to indices 0 and 1.
-
-                rows.map((row) => {
-                    console.log(`${row[0]}\t\t\t ${row[1]}`);
-                });
+                console.log(rows)
+                // rows.map((row) => {
+                //     console.log(`${row[0]}\t\t\t ${row[1]}`);
+                // });
             } else {
                 console.log('No data found.');
             }
@@ -122,6 +124,7 @@ async function modifySpreadsheet_v4(array) {
         // miêu tả thuật toán: từ @array ta đem so sánh với Map -> chỉ lấy ra một cái array chứa index của những ô cần điền ngày giờ
 
         //TODO: Modify spreadsheet data
+
     })
 
 }
