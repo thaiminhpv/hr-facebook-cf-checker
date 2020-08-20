@@ -33,5 +33,5 @@ app.post('/', (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`runnning on ${port}...`);
+    console.log(`running on ${port}...`);
 })

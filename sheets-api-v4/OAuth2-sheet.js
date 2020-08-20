@@ -2,8 +2,6 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
-// code queried :  4/3AG-c4bT_8k4ezBz64XCuDUa1KgsCrMvQsbyfsDPjzkEIrw88JwBLFBo7mVUBSe_lk3pJIJq1V6OjgtXT-JhbV8
-
 // const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']; //read-only
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']; // write/read
 const TOKEN_PATH = 'token.json';
@@ -16,9 +14,7 @@ async function callAPI(callback) {
 }
 
 function authorize(credentials, callback) {
-    // const {client_secret, client_id, redirect_uris} = credentials.installed;
     const {client_secret, client_id, redirect_uris} = credentials.web;
-    // const {web : {client_secret, client_id, redirect_uris}} = require('../client_secret.json');
     // TODO: tạo cổng authen trên express -> store token trả về
     // TODO: sau này khi up lên firebase, consider tạo một cổng dẫn vào dường link lấy token
     const oAuth2Client = new google.auth.OAuth2(
@@ -60,32 +56,6 @@ function getNewToken(oAuth2Client, callback) {
             });
             callback(oAuth2Client);
         });
-    });
-}
-
-/**
- * Prints the names and majors of students in a sample spreadsheet:
- * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
- * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
- */
-function listMajors(auth) {
-    //TODO!: this work! incredible! find way to do the same things with our sheets (copy and modify, not write from scratch)
-    const sheets = google.sheets({version: 'v4', auth});
-    sheets.spreadsheets.values.get({
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-        range: 'Class Data!A2:E',
-    }, (err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
-        const rows = res.data.values;
-        if (rows.length) {
-            console.log('Name, Major:');
-            // Print columns A and E, which correspond to indices 0 and 4.
-            rows.map((row) => {
-                console.log(`${row[0]}, ${row[4]}`);
-            });
-        } else {
-            console.log('No data found.');
-        }
     });
 }
 

@@ -28,6 +28,7 @@ async function post(URL, data) {
     });
 }
 
+// TODO: Post data to server here (PostAPI to GoogleSpreadsheet) Firebase first (change link)
 const url = 'http://localhost:3000'
 const route = '/facebook-endpoint'
 const link = url + route
@@ -36,8 +37,6 @@ async function run() {
     await openAllMinimized()
     const allCfUser = getAllCfUser();
     console.log(allCfUser)
-    // TODO: Post data to server here (PostAPI to GoogleSpreadsheet) Firebase first
-    // post data to localhost when testing firebase
     get(link, allCfUser)
         .then((response => {
             console.log('response: ', response)
