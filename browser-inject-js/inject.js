@@ -29,7 +29,9 @@ async function post(URL, data) {
 }
 
 // TODO: Post data to server here (PostAPI to GoogleSpreadsheet) Firebase first (change link)
-const url = 'http://localhost:3000'
+// const url = 'http://localhost:3000'
+// const url = 'http://localhost:5001/facebook-check-c-1597716165009/us-central1/app'
+const url = 'https://facebook-check-c-1597716165009.web.app'
 const route = '/facebook-endpoint'
 const link = url + route
 
