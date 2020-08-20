@@ -1,5 +1,5 @@
 const axios = require('axios');
-const callAPI = require('./OAuth2-sheet');
+const {callAPI} = require('./OAuth2-sheet');
 const {google} = require('googleapis');
 
 /**
@@ -37,11 +37,12 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
             majorDimension: "COLUMNS",
         }, (err, res) => {
             const rows = res.data.values;
-            if (rows.length) {
-                resolve(rows);
-            } else {
-                reject('The API returned an error: ' + err)
-            }
+            resolve(rows);
+            // if (rows.length) {
+            //     resolve(rows);
+            // } else {
+            //     reject('The API returned an error: ' + err)
+            // }
         });
     })
 }
@@ -53,30 +54,36 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
  * @returns {Promise<void>}
  */
 async function modifySpreadsheet(listUserCf) {
-    const {spreadsheets: {sheets_id, sheets_name, range}} = require('../config.json');
-    const mapID = require('../userMapID.json');
+    const {spreadsheets: {sheets_id, sheets_name, range}} = require('../resources/config.json');
+    const mapID = require('../resources/userMapID.json');
     const peopleCount = 39;
 
     await callAPI((auth) => {
         const sheets = google.sheets({version: 'v4', auth});
 
+        //read from Sheets first to ignore existed value
         readSpreadsheetsData(sheets, sheets_id, sheets_name, range).then(allUser => {
-            let notCfYetInSheet = []
-            console.log(allUser[0])
-            for (const [index, value] of allUser[0].entries()) {
-                if (value === "") {
-                    notCfYetInSheet.push(index)
-                }
-            }
-            console.log(notCfYetInSheet)
-
             // remap user
             let idCf = listUserCf.map((e) => mapID[e])
-            // find the intersection between 2 array: @idCf and @notCfYetInSheet
-            let newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+            let newCf = null
+
+            let notCfYetInSheet = []
+            if (allUser !== undefined) { //null check
+                console.log(allUser[0]);
+                for (const [index, value] of allUser[0].entries()) {
+                    if (value === "") {
+                        notCfYetInSheet.push(index)
+                    }
+                }
+                console.log(notCfYetInSheet);
+
+                // find the intersection between 2 array: @idCf and @notCfYetInSheet
+                newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+            } else {
+                newCf = idCf
+            }
             let values = convertUserCfToWriteableTime(newCf, peopleCount);
 
-            //SOLVE: read from Sheets first to ignore existed value
             sheets.spreadsheets.values.update({
                 spreadsheetId: sheets_id,
                 range: `${sheets_name}!${range}`,

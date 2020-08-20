@@ -1,5 +1,6 @@
 const express = require('express');
 const {modifySpreadsheet} = require('../sheets-api-v4/rest-api-sender');
+const {getTokenFromCode} = require('../sheets-api-v4/OAuth2-sheet');
 
 const app = express();
 
@@ -25,8 +26,17 @@ app.get('/api-token', (req, res) => {
     console.log('API get token');
     console.log(req.query)
     //TODO: connect with OAuth2-sheet.js automatically
-    res.send('API token get')
+    let code = req.query.code
+    console.log(code)
+    getTokenFromCode(code)
+    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').spreadsheets.sheets_id}/edit`)
 })
+
+app.get('/link-auth', (req, res) => {
+    const link = require('../resources/linkOAuth2.json');
+    console.log(link)
+    res.redirect(link)
+});
 
 app.post('/', (req, res) => {
     console.log('POST request')

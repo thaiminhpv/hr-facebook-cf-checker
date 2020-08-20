@@ -45,3 +45,4 @@ async function run() {
 }
 
 run().then((response) => console.log('Done!'))
+console.log(`Go to ${url}/link-auth to authentication`)

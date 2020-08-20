@@ -23,7 +23,7 @@
 const {putSpreadsheetsAPI, getSpreadsheetsAPI} = require('./sheets-api-v4/rest-api-sender');
 const {getGroupFirstPostID, getCommentsFromPostID, getReplyComments} = require('./facebook-fetcher/facebook');
 
-const {spreadsheets, facebook} = require('./config.json');
+const {spreadsheets, facebook} = require('./resources/config.json');
 
 const {sheets_id, range, sheets_name, API_key} = spreadsheets
 const {access_token, group_id} = facebook
