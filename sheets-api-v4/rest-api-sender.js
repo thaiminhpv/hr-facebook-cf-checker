@@ -19,72 +19,81 @@ function getDate() {
  * @param peopleCount
  * @returns 2-dimensional array
  */
-function convertUserCfToWriteableTime(array, mapID, peopleCount) {
-    let idCf = array.map((e) => mapID[e])
-    console.log(idCf)
+function convertUserCfToWriteableTime(array, peopleCount) {
     const today = getDate();
     let values = []
     for (let i = 0; i < peopleCount; i++) {
-        values.push(idCf.includes(i) ? [getDate()] : [])
+        values.push(array.includes(i) ? [today] : [])
     }
     console.log(values)
     return values;
 }
 
+async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
+    return await new Promise((resolve, reject) => {
+        sheets.spreadsheets.values.get({
+            spreadsheetId: sheets_id,
+            range: `${sheets_name}!${range}`,
+            majorDimension: "COLUMNS",
+        }, (err, res) => {
+            const rows = res.data.values;
+            if (rows.length) {
+                resolve(rows);
+            } else {
+                reject('The API returned an error: ' + err)
+            }
+        });
+    })
+}
+
 /**
  * Usable
  * @version v4
- * @param array
+ * @param listUserCf
  * @returns {Promise<void>}
  */
-async function modifySpreadsheet(array) {
+async function modifySpreadsheet(listUserCf) {
     const {spreadsheets: {sheets_id, sheets_name, range}} = require('../config.json');
     const mapID = require('../userMapID.json');
     const peopleCount = 39;
 
     await callAPI((auth) => {
         const sheets = google.sheets({version: 'v4', auth});
-        let values = convertUserCfToWriteableTime(array, mapID, peopleCount);
 
-        //FIXME: read from Sheets first to ignore existed value
-        sheets.spreadsheets.values.update({
-            spreadsheetId: sheets_id,
-            range: `${sheets_name}!${range}`,
-            valueInputOption: 'USER_ENTERED',
-            resource: {
-                // majorDimension: "COLUMNS",
-                values: values
+        readSpreadsheetsData(sheets, sheets_id, sheets_name, range).then(allUser => {
+            let notCfYetInSheet = []
+            console.log(allUser[0])
+            for (const [index, value] of allUser[0].entries()) {
+                if (value === "") {
+                    notCfYetInSheet.push(index)
+                }
             }
-        }, (err, res) => {
-            if (err) return console.log('The API returned an error: ' + err);
-            const rows = res.data;
-            console.log('rows: ');
-            console.log(rows)
-        });
+            console.log(notCfYetInSheet)
+
+            // remap user
+            let idCf = listUserCf.map((e) => mapID[e])
+            // find the intersection between 2 array: @idCf and @notCfYetInSheet
+            let newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+            let values = convertUserCfToWriteableTime(newCf, peopleCount);
+
+            //SOLVE: read from Sheets first to ignore existed value
+            sheets.spreadsheets.values.update({
+                spreadsheetId: sheets_id,
+                range: `${sheets_name}!${range}`,
+                valueInputOption: 'USER_ENTERED',
+                resource: {
+                    // majorDimension: "COLUMNS",
+                    values: values
+                }
+            }, (err, res) => {
+                if (err) return console.log('The API returned an error: ' + err);
+                const rows = res.data;
+                console.log('rows: ');
+                console.log(rows)
+            });
+        }).catch(error => console.log(error));
     })
-
 }
 
-/**
- * @readonly
- * @returns {Promise<void>}
- */
-async function readSpreadsheetsData() { // read current spreadsheet data
-    sheets.spreadsheets.values.get({
-        spreadsheetId: sheets_id,
-        range: `${sheets_name}!${range}`,
-        majorDimension: "COLUMNS",
-    }, (err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
-        const rows = res.data.values;
-        if (rows.length) {
-            console.log('Name \t Major:');
-            console.log(rows)
-        } else {
-            console.log('No data found.');
-        }
-    });
 
-}
-
-module.exports = { modifySpreadsheet , readSpreadsheetsData};
+module.exports = {modifySpreadsheet};

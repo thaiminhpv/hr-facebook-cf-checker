@@ -1,21 +1,44 @@
-const {modifySpreadsheet, getSpreadsheetsAPI, putSpreadsheetsAPI} = require('./sheets-api-v4/rest-api-sender');
-const {getGroupFirstPostID, getCommentsFromPostID, getReplyComments} = require('./facebook-fetcher/facebook');
+// const {modifySpreadsheet, getSpreadsheetsAPI, putSpreadsheetsAPI} = require('./sheets-api-v4/rest-api-sender');
+// const {getGroupFirstPostID, getCommentsFromPostID, getReplyComments} = require('./facebook-fetcher/facebook');
+//
+// const {spreadsheets, facebook} = require('./config.json');
+//
+// const {sheets_id, range, sheets_name, API_key} = spreadsheets
+// const {access_token, group_id} = facebook
+//
+// const axios = require('axios');
+//
+// console.log('App Testing')
+//
+// const testingCommentID = '155026662501603'
+// const URL = `https://graph.facebook.com/${testingCommentID}` ///comments`
 
-const {spreadsheets, facebook} = require('./config.json');
+function abc() {
+    return new Promise((resolve, reject) => setTimeout(() => {
+        console.log(2)
+        resolve('567')
+    }, 2000))
+}
 
-const {sheets_id, range, sheets_name, API_key} = spreadsheets
-const {access_token, group_id} = facebook
+async function xyz() {
+    console.log(1);
+    let x = await abc()
+    console.log(x)
+    //     .then(value => {
+    //     console.log(value)
+    // })
+    console.log(3);
+}
 
-const axios = require('axios');
+// xyz()
+let difference = arr1.filter(x => !arr2.includes(x));
 
-console.log('App Testing')
+// setTimeout(() => {
+//     console.log(x)
+// },2000)
 
-const testingCommentID = '155026662501603'
-const URL = `https://graph.facebook.com/${testingCommentID}` ///comments`
-
-
-let userCfArray = ["Phạm Vũ Thái Minh","Đỗ Thị Hà Linh","Kim Ha","Nguyễn Mi","鈴木菫","Khanh Duong","Nguyễn Thanh Hiền","Trần Thanh Ngân","Nguyễn Hồng Phúc","Minh Phúc","Ngô Vũ Quỳnh Anh","Hoang Minh Tung","Nguyễn Hương","Tuan Minh Do Xuan","Lê Thảo","Dương Diệu Thúy","Nguyễn Mạnh Hà","Khuong Viet Dung"]
-modifySpreadsheet(userCfArray)
+// let userCfArray = ["Phạm Vũ Thái Minh","Đỗ Thị Hà Linh","Kim Ha","Nguyễn Mi","鈴木菫","Khanh Duong","Nguyễn Thanh Hiền","Trần Thanh Ngân","Nguyễn Hồng Phúc","Minh Phúc","Ngô Vũ Quỳnh Anh","Hoang Minh Tung","Nguyễn Hương","Tuan Minh Do Xuan","Lê Thảo","Dương Diệu Thúy","Nguyễn Mạnh Hà","Khuong Viet Dung"]
+// modifySpreadsheet(userCfArray)
 
 // values = ['abc', 123, '456']
 // putSpreadsheetsAPI({sheets_id, range, sheets_name, API_key}, values)
