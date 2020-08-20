@@ -29,8 +29,7 @@ async function post(URL, data) {
 }
 
 const url = 'http://localhost:3000'
-// const route = '/facebook-endpoint'
-const route = ''
+const route = '/facebook-endpoint'
 const link = url + route
 
 async function run() {
