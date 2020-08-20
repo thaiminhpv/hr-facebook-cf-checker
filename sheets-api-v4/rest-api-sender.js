@@ -1,10 +1,6 @@
 const axios = require('axios');
-
-
-//    "group_id": "598883897329508"155017612502508
-
-// console.log(getCommentsFromPostID("155017612502508_155026279168308"))
-// console.log(getReplyComments(155051485832454))
+const callAPI = require('./OAuth2-sheet');
+const {google} = require('googleapis');
 
 /**
  * need OAuth2 to edit document
@@ -55,12 +51,7 @@ async function getSpreadsheetsAPI({sheets_id, range, sheets_name, API_key}) {
     })
 }
 
-async function getDate() {
-    let date = await new Date()
-    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes() + 1}:00`
-}
-
-async function modifySpreadsheet(array) {
+async function modifySpreadsheet_v3(array) {
     const {GoogleSpreadsheet} = require('google-spreadsheet');
     const {spreadsheets: {sheets_id}} = require('../config.json');
     const credentials = require('../backup-useless/sheets-api-v3/client-secret.json');
@@ -94,5 +85,46 @@ async function modifySpreadsheet(array) {
     await sheet.saveUpdatedCells(); // save all updates in one call
 }
 
+async function getDate() {
+    let date = await new Date()
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes() + 1}:00`
+}
 
-module.exports = {getSpreadsheetsAPI, putSpreadsheetsAPI, modifySpreadsheet}
+/**
+ * Usable
+ * @param array
+ * @returns {Promise<void>}
+ */
+async function modifySpreadsheet_v4(array) {
+    const {spreadsheets: {sheets_id, sheets_name, range}} = require('../config.json');
+    await callAPI((auth) => {
+        const sheets = google.sheets({version: 'v4', auth});
+
+        // read current spreadsheet data
+        sheets.spreadsheets.values.get({
+            spreadsheetId: sheets_id,
+            range: `${sheets_name}!${range}`,
+        }, (err, res) => {
+            if (err) return console.log('The API returned an error: ' + err);
+
+            const rows = res.data.values;
+            if (rows.length) {
+                console.log('Name \t\t\t Major:');
+                // Print columns C and D, which correspond to indices 0 and 1.
+
+                rows.map((row) => {
+                    console.log(`${row[0]}\t\t\t ${row[1]}`);
+                });
+            } else {
+                console.log('No data found.');
+            }
+        });
+        // miêu tả thuật toán: từ @array ta đem so sánh với Map -> chỉ lấy ra một cái array chứa index của những ô cần điền ngày giờ
+
+        //TODO: Modify spreadsheet data
+    })
+
+}
+
+
+module.exports = {getSpreadsheetsAPI, putSpreadsheetsAPI, modifySpreadsheet: modifySpreadsheet_v4}

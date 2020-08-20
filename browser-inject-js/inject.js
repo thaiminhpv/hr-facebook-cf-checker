@@ -28,7 +28,9 @@ async function post(URL, data) {
     });
 }
 
-const link = 'http://localhost:3000/'
+const url = 'http://localhost:3000'
+const route = '/facebook-endpoint'
+const link = url + route
 
 async function run() {
     await openAllMinimized()

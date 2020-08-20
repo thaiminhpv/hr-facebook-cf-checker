@@ -2,34 +2,27 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
+// code queried :  4/3AG-c4bT_8k4ezBz64XCuDUa1KgsCrMvQsbyfsDPjzkEIrw88JwBLFBo7mVUBSe_lk3pJIJq1V6OjgtXT-JhbV8
+
+// const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']; //read-only
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']; // write/read
 const TOKEN_PATH = 'token.json';
 
-// Load client secrets from a local file.
-fs.readFile('../backup-useless/sheets-api-v3/client-secret.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    // Authorize a client with credentials, then call the Google Sheets API.
-    authorize(JSON.parse(content), listMajors);
-});
+async function callAPI(callback) {
+    fs.readFile('./client_secret.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        authorize(JSON.parse(content), callback);
+    });
+}
 
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
 function authorize(credentials, callback) {
     // const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const {web : {client_secret, client_id, redirect_uris}} = require('./client_secret.json');
+    const {client_secret, client_id, redirect_uris} = credentials.web;
+    // const {web : {client_secret, client_id, redirect_uris}} = require('../client_secret.json');
     // TODO: tạo cổng authen trên express -> store token trả về
     // TODO: sau này khi up lên firebase, consider tạo một cổng dẫn vào dường link lấy token
     const oAuth2Client = new google.auth.OAuth2(
-        // client_id, client_secret, redirect_uris[0]);
-        client_id, client_secret, 'http://localhost:3000');
+        client_id, client_secret, redirect_uris[0]);
 
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
@@ -76,7 +69,7 @@ function getNewToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
 function listMajors(auth) {
-    //TODO: this work! incredible! find way to do the same things with our sheets (copy and modify, not write from scratch)
+    //TODO!: this work! incredible! find way to do the same things with our sheets (copy and modify, not write from scratch)
     const sheets = google.sheets({version: 'v4', auth});
     sheets.spreadsheets.values.get({
         spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
@@ -95,3 +88,5 @@ function listMajors(auth) {
         }
     });
 }
+
+module.exports = callAPI
