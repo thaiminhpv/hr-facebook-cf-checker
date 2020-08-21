@@ -48,7 +48,7 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
  * @returns {Promise<void>}
  */
 async function modifySpreadsheet(listUserCf) {
-    const { spreadsheets: { sheets_id, sheets_name, range }, map_user_id } = require('../../../resources/config.json');
+    const { spreadsheets: { sheets_id, sheets_name, range }, map_user_id } = require('../../resources/config.json');
     const peopleCount = 39;
 
     return await callAPI((auth) => {

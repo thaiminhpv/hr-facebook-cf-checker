@@ -23,12 +23,12 @@ app.get('/api-token', (req, res) => {
     let code = req.query.code
     console.log(code)
     getTokenFromCode(code)
-    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../../resources/config.json').spreadsheets.sheets_id}/edit`)
+    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').spreadsheets.sheets_id}/edit`)
 })
 
 app.get('/link-auth', (req, res) => {
     try {
-        const link = require('../../resources/linkOAuth2.json');
+        const link = require('../resources/linkOAuth2.json');
         console.log(link)
         res.redirect(link)
     } catch (error) {

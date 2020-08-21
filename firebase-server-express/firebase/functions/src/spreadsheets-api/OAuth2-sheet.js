@@ -3,14 +3,14 @@ const { google } = require('googleapis');
 
 // const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']; //read-only
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']; // write/read
-const TOKEN_PATH = '../../resources/token.json';
-const LINK_AUTH_PATH = '../../resources/linkOAuth2.json'
+const TOKEN_PATH = './resources/token.json';
+const LINK_AUTH_PATH = './resources/linkOAuth2.json'
 
 let authentication = null
 let pending_callback = null
 
 async function callAPI(callback) {
-    fs.readFile('../../resources/client_secret.json', (err, content) => {
+    fs.readFile('./resources/client_secret.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         return authorize(JSON.parse(content), callback);
     });
