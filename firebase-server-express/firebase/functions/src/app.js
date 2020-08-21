@@ -4,7 +4,6 @@ const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
 
 const app = express();
 
-
 app.get('/', (req, res) => {
     console.log('GET request')
     console.log(req.query)
@@ -50,5 +49,4 @@ app.post('/', (req, res) => {
 //     console.log(`running on ${port}...`);
 // })
 
-// exports.app = functions.https.onRequest(app);
 module.exports = app;
