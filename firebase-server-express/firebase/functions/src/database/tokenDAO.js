@@ -27,7 +27,7 @@ function setLinkAuth(link) {
     console.log('setting link auth, link auth is: -----')
     console.log(link)
     return db.collection(collectionName).doc('linkAuth').set({
-        link: JSON.stringify(link)
+        link: link
     });
 }
 
@@ -38,15 +38,12 @@ async function getLinkAuth() {
     console.log(link)
     console.log('token is: ')
     console.log(token)
-    if (isObjectEmpty(link)) {
+    if (isObjectEmpty(link[1])) {
         return 'https://www.google.com';
     } else {
-        return link
+        let unformattedLink = link[1].link
+        return unformattedLink.slice(1, -1) //hot fix ""abc""
     }
-    // snapshot.forEach(snapshot => {
-    //     console.log(snapshot)
-    //     return snapshot[0].link
-    // });
 }
 
 function setToken(token) {
@@ -62,10 +59,10 @@ async function getToken() {
     console.log(link)
     console.log('token is: ')
     console.log(token)
-    if (isObjectEmpty(token)) {
+    if (isObjectEmpty(token[1])) {
         return null;
     } else {
-        return token
+        return token[1].token
     }
 }
 

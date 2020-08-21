@@ -2,11 +2,20 @@ const { callAPI } = require('./OAuth2-sheet');
 const { google } = require('googleapis');
 
 /**
+ * @source https://stackoverflow.com/a/1050782/11806050
+ * @param hours
+ * @returns {Date}
+ */
+Date.prototype.addHours = function(hours) {
+    this.setTime(this.getTime() + (hours*60*60*1000));
+    return this;
+}
+/**
  * Get today
  * @returns {string}
  */
 function getDate() {
-    let date = new Date()
+    let date = (new Date()).addHours(7) //+ 7 hours because server's time is US based
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes() + 1}:00`
 }
 
