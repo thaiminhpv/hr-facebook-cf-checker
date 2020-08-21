@@ -1,6 +1,7 @@
 const express = require('express');
-const {modifySpreadsheet} = require('./spreadsheets-api/rest-api-sender');
-const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
+const { modifySpreadsheet } = require('./spreadsheets-api/rest-api-sender');
+const { getTokenFromCode } = require('./spreadsheets-api/OAuth2-sheet');
+const database = require('./database/tokenDAO');
 
 const app = express();
 
@@ -12,8 +13,12 @@ app.get('/', (req, res) => {
 
 app.get('/facebook-endpoint', (req, res) => {
     let userCfArray = JSON.parse(req.query.data);
-    // let userCfArray = ["Phạm Vũ Thái Minh","Đỗ Thị Hà Linh","Kim Ha","Nguyễn Mi","鈴木菫","Khanh Duong","Nguyễn Thanh Hiền","Trần Thanh Ngân","Nguyễn Hồng Phúc","Minh Phúc","Ngô Vũ Quỳnh Anh","Hoang Minh Tung","Nguyễn Hương","Tuan Minh Do Xuan","Lê Thảo","Dương Diệu Thúy","Nguyễn Mạnh Hà","Khuong Viet Dung"]
-    modifySpreadsheet(userCfArray).then((response) => console.log('Done!')).catch(error => console.log(error));
+    console.log("facebook-endpoint received: ------")
+    console.log(userCfArray)
+
+    modifySpreadsheet(userCfArray)
+        .then(() => console.log('Done!'))
+        .catch(error => console.log(error));
     res.json(userCfArray)
 })
 
@@ -27,14 +32,14 @@ app.get('/api-token', (req, res) => {
 })
 
 app.get('/link-auth', (req, res) => {
-    try {
-        const link = require('../resources/linkOAuth2.json');
+    database.getLinkAuth().then(link => {
         console.log(link)
         res.redirect(link)
-    } catch (error) {
+        return
+    }).catch(error => {
         console.log(error)
         res.send(error)
-    }
+    });
 });
 
 app.post('/', (req, res) => {
