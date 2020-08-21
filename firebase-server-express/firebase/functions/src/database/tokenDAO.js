@@ -62,7 +62,7 @@ async function getToken() {
     if (isObjectEmpty(token[1])) {
         return null;
     } else {
-        return token[1].token
+        return JSON.parse(token[1].token) // this will be JSON.parse() later one more time -> this is hot fix
     }
 }
 

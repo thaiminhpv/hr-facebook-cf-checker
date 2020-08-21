@@ -31,8 +31,13 @@ function authorize(credentials, callback) {
     return database.getToken().then(token => {
         if (!token) return saveCodeToLocal(oAuth2Client, callback);
         // if we DO have previously stored a token.
+        console.log('hereeeeee!')
+        console.log('token before parse: ')
+        console.log(token)
+        console.log('token after parse: ')
+        console.log(JSON.parse(token))
         oAuth2Client.setCredentials(JSON.parse(token));
-        pending_callback = null //clear
+        // pending_callback = null //clear
         return callback(oAuth2Client);
     });
 }
