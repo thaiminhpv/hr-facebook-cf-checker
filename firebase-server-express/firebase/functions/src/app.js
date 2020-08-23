@@ -59,4 +59,13 @@ app.post('/', (req, res) => {
     res.send("POST successfully")
 })
 
+// -------------GET FILE --------------
+app.get('/injection/caller', (req, res) => {
+    res.sendfile('./resources/browser-inject-js/caller.js')
+})
+
+app.get('/injection/inject', (req, res) => {
+    res.sendfile('./resources/browser-inject-js/inject.js')
+})
+
 module.exports = app;

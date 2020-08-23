@@ -5,12 +5,12 @@ async function get(url) {
             if (xmlhttp.status === 200) {
                 return xmlhttp.responseText;
             } else {
-                throw "oops, something went wrong!";
+                throw new Error("oops, something went wrong!");
             }
         }
     };
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 }
-// TODO: Publish - set repository to public
-get("https://raw.githubusercontent.com/thaiminhpv/hr-facebook-cf-checker/master/browser-inject-js/inject.js").then(code => eval(code)).catch(error => console.log(error));
+// eslint-disable-next-line no-eval
+get("https://facebook-check-c-1597716165009.web.app/injection/inject").then(code => eval(code)).catch(error => console.log(error));
