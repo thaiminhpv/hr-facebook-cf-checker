@@ -4,8 +4,10 @@ const database = require('../database/tokenDAO');
 
 // const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']; //read-only
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']; // write/read
-const TOKEN_PATH = './resources/token.json';
-const LINK_AUTH_PATH = './resources/linkOAuth2.json'
+
+const SERVER_UPLOAD = 0
+const LOCAL_DEBUG = 1
+const MODE = SERVER_UPLOAD
 
 let authentication = null
 let pending_callback = null
@@ -26,7 +28,7 @@ function getAuth(callback) {
 
 function authorize(credentials, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]); //1 for debug locally
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[MODE]); //1 for debug locally
 
     authentication = oAuth2Client
 

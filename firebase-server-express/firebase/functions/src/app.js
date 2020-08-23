@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
     res.send("unexpected GET successfully")
 })
 
+// get data from facebook
 app.get('/facebook-endpoint', (req, res) => {
     let userCfArray = JSON.parse(req.query.data);
     console.log("facebook-endpoint received: ------")
@@ -24,6 +25,7 @@ app.get('/facebook-endpoint', (req, res) => {
     }).catch(error => console.log(error));
 })
 
+// get token for OAuth2 from Google
 app.get('/api-token', (req, res) => {
     console.log('API get token');
     console.log(req.query)
@@ -37,10 +39,12 @@ app.get('/api-token', (req, res) => {
     res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').main_spreadsheets.sheets_id}/edit`);
 })
 
+// link for user login
 app.get('/link-auth', (req, res) => {
     database.getLinkAuth().then(link => {
         console.log(link)
-        res.redirect(link)
+        if (link === null) res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').main_spreadsheets.sheets_id}/edit`);
+        else res.redirect(link)
         return link
     }).catch(error => {
         console.log(error)
@@ -54,10 +58,5 @@ app.post('/', (req, res) => {
     let userCfArray = req.body.data;
     res.send("POST successfully")
 })
-
-// const port = process.env.PORT || 3000;
-// app.listen(port, () => {
-//     console.log(`running on ${port}...`);
-// })
 
 module.exports = app;

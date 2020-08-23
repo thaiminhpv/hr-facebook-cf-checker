@@ -38,7 +38,11 @@ function setLinkAuth(link) {
 async function getLinkAuth() {
     console.log('getting link auth...')
     let [link, token] = await queryCollection(collectionName)
-    if (link === undefined || isObjectEmpty(link[1])) {
+
+    //this case we already have token and no need to login
+    if (token !== undefined && !isObjectEmpty(token[1])) return null
+
+    if (link === undefined || link === null || isObjectEmpty(link[1])) {
         return Promise.reject(new Error('Link auth is empty'))
     } else {
         return link[1].link.slice(1, -1) //hot fix ""abc""
@@ -48,6 +52,7 @@ async function getLinkAuth() {
 function setToken(token) {
     console.log('setting token')
     console.log(token)
+    setLinkAuth(null) //remove OAuth2 link
     return db.collection(collectionName).doc('token').set({token: JSON.stringify(token)});
 }
 
