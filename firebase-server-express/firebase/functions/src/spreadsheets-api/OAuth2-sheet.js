@@ -26,7 +26,7 @@ function getAuth(callback) {
 
 function authorize(credentials, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]); //1 for debug locally
 
     authentication = oAuth2Client
 
@@ -67,8 +67,14 @@ function saveCodeToLocal(oAuth2Client, callback) {
 }
 
 function getTokenFromCode(code) {
-    authentication.getToken(code, (err, token) => {
-        if (err) return new Error('Error while trying to retrieve access token', err);
+    if (authentication === null)
+        throw new Error('authentication is null')
+
+    return authentication.getToken(code, (err, token) => {
+        if (err) {
+            console.log('Error while trying to retrieve access token: --')
+            return Promise.reject(err);
+        }
         authentication.setCredentials(token);
         // Store the token to disk for later program executions
         database.setToken(JSON.stringify(token)).then(response => {

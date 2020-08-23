@@ -3,8 +3,8 @@ admin.initializeApp();
 const db = admin.firestore()
 
 /*
- this collection has only 2 rows:
- row1: link auth
+ 'authentication' collection has only 2 rows:
+ row1: linkAuth - string
  row2: token - json
 */
 const collectionName = 'authentication'
@@ -24,42 +24,37 @@ async function queryCollection(collection) {
 }
 
 function setLinkAuth(link) {
-    console.log('setting link auth, link auth is: -----')
+    console.log('setting link auth')
     console.log(link)
     return db.collection(collectionName).doc('linkAuth').set({
         link: link
     });
 }
 
+/**
+ *
+ * @returns {Promise<string>}
+ */
 async function getLinkAuth() {
     console.log('getting link auth...')
     let [link, token] = await queryCollection(collectionName)
-    console.log('link is: ')
-    console.log(link)
-    console.log('token is: ')
-    console.log(token)
-    if (isObjectEmpty(link[1])) {
-        return 'https://www.google.com';
+    if (link === undefined || isObjectEmpty(link[1])) {
+        return Promise.reject(new Error('Link auth is empty'))
     } else {
-        let unformattedLink = link[1].link
-        return unformattedLink.slice(1, -1) //hot fix ""abc""
+        return link[1].link.slice(1, -1) //hot fix ""abc""
     }
 }
 
 function setToken(token) {
-    console.log('setting token, token is: ---')
+    console.log('setting token')
     console.log(token)
     return db.collection(collectionName).doc('token').set({token: JSON.stringify(token)});
 }
 
 async function getToken() {
-    console.log('getting token, token is: ---')
+    console.log('getting token')
     let [link, token] = await queryCollection(collectionName)
-    console.log('link is: ')
-    console.log(link)
-    console.log('token is: ')
-    console.log(token)
-    if (isObjectEmpty(token[1])) {
+    if (token === undefined || isObjectEmpty(token[1])) {
         return null;
     } else {
         return JSON.parse(token[1].token) // this will be JSON.parse() later one more time -> this is hot fix
