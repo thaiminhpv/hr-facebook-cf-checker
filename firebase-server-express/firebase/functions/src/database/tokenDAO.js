@@ -31,6 +31,10 @@ function setLinkAuth(link) {
     });
 }
 
+/**
+ *
+ * @returns {Promise<string>}
+ */
 async function getLinkAuth() {
     console.log('getting link auth...')
     let [link, token] = await queryCollection(collectionName)
@@ -39,10 +43,9 @@ async function getLinkAuth() {
     console.log('token is: ')
     console.log(token)
     if (isObjectEmpty(link[1])) {
-        return 'https://www.google.com';
+        return Promise.reject(new Error('Link auth is empty'))
     } else {
-        let unformattedLink = link[1].link
-        return unformattedLink.slice(1, -1) //hot fix ""abc""
+        return link[1].link.slice(1, -1) //hot fix ""abc""
     }
 }
 

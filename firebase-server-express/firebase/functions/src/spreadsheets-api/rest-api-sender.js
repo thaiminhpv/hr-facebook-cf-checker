@@ -37,8 +37,8 @@ function convertUserCfToWriteableTime(array, peopleCount) {
     return values;
 }
 
-async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
-    return await new Promise((resolve, reject) => {
+function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
+    return new Promise((resolve, reject) => {
         sheets.spreadsheets.values.get({
             spreadsheetId: sheets_id,
             range: `${sheets_name}!${range}`,

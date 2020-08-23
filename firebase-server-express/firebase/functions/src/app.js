@@ -6,9 +6,9 @@ const database = require('./database/tokenDAO');
 const app = express();
 
 app.get('/', (req, res) => {
-    console.log('GET request')
+    console.log('unexpected GET request')
     console.log(req.query)
-    res.send("GET successfully")
+    res.send("unexpected GET successfully")
 })
 
 app.get('/facebook-endpoint', (req, res) => {
@@ -29,8 +29,14 @@ app.get('/api-token', (req, res) => {
     console.log(req.query)
     let code = req.query.code
     console.log(code)
-    getTokenFromCode(code)
-    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').main_spreadsheets.sheets_id}/edit`)
+    getTokenFromCode(code).then((response) => {
+        console.log(response)
+        res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').main_spreadsheets.sheets_id}/edit`)
+        return response
+    }).catch(reason => {
+        console.error(reason)
+        res.send(reason)
+    });
 })
 
 app.get('/link-auth', (req, res) => {
