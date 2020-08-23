@@ -1,6 +1,6 @@
 const express = require('express');
-const { modifySpreadsheet } = require('./spreadsheets-api/rest-api-sender');
-const { getTokenFromCode } = require('./spreadsheets-api/OAuth2-sheet');
+const {modifySpreadsheet} = require('./spreadsheets-api/rest-api-sender');
+const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
 const database = require('./database/tokenDAO');
 
 const app = express();
@@ -15,11 +15,13 @@ app.get('/facebook-endpoint', (req, res) => {
     let userCfArray = JSON.parse(req.query.data);
     console.log("facebook-endpoint received: ------")
     console.log(userCfArray)
-
-    modifySpreadsheet(userCfArray)
-        .then(() => console.log('Done!'))
-        .catch(error => console.log(error));
     res.json(userCfArray)
+
+    modifySpreadsheet(userCfArray).then((response) => {
+        console.log(response)
+        console.log('Done! in app.js')
+        return response
+    }).catch(error => console.log(error));
 })
 
 app.get('/api-token', (req, res) => {
@@ -28,14 +30,14 @@ app.get('/api-token', (req, res) => {
     let code = req.query.code
     console.log(code)
     getTokenFromCode(code)
-    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').spreadsheets.sheets_id}/edit`)
+    res.redirect(`https://docs.google.com/spreadsheets/d/${require('../resources/config.json').main_spreadsheets.sheets_id}/edit`)
 })
 
 app.get('/link-auth', (req, res) => {
     database.getLinkAuth().then(link => {
         console.log(link)
         res.redirect(link)
-        return
+        return link
     }).catch(error => {
         console.log(error)
         res.send(error)

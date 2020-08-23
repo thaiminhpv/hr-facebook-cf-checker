@@ -1,15 +1,16 @@
-const { callAPI } = require('./OAuth2-sheet');
-const { google } = require('googleapis');
+const {getAuth} = require('./OAuth2-sheet');
+const {google} = require('googleapis');
 
 /**
  * @source https://stackoverflow.com/a/1050782/11806050
  * @param hours
  * @returns {Date}
  */
-Date.prototype.addHours = function(hours) {
-    this.setTime(this.getTime() + (hours*60*60*1000));
+Date.prototype.addHours = function (hours) {
+    this.setTime(this.getTime() + (hours * 60 * 60 * 1000));
     return this;
 }
+
 /**
  * Get today
  * @returns {string}
@@ -50,72 +51,78 @@ async function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
     })
 }
 
+
+function updateSpreadsheetsData(sheets, main_spreadsheets, values) {
+    return sheets.spreadsheets.values.update({
+        spreadsheetId: main_spreadsheets.sheets_id,
+        range: `${main_spreadsheets.sheets_name}!${main_spreadsheets.range}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            // majorDimension: "COLUMNS",
+            values: values
+        }
+    }, (err, res) => {
+        if (err) return console.log('The API returned an error: ' + err);
+        const rows = res.data;
+        console.log('rows: ');
+        console.log(rows)
+        return rows
+    })
+}
+
 /**
  * Usable
  * @version v4
  * @param listUserCf
- * @returns {Promise<void>}
+ * @returns {Promise<*>}
  */
-async function modifySpreadsheet(listUserCf) {
-    const { spreadsheets: { sheets_id, sheets_name, range }, map_user_id } = require('../../resources/config.json');
+function modifySpreadsheet(listUserCf) {
+    const {main_spreadsheets, map_user_id} = require('../../resources/config.json');
     const peopleCount = 39;
 
-    return await callAPI((auth) => {
-        const sheets = google.sheets({ version: 'v4', auth });
+    return getAuth((auth) => {
+        const sheets = google.sheets({version: 'v4', auth});
 
-        //map
-        let mapID = {}
-        readSpreadsheetsData(sheets, sheets_id, map_user_id.sheets_name, map_user_id.range).then(facebookNameQueried => {
+        let queue = []
+        // 1. get map
+        queue.push(readSpreadsheetsData(sheets, map_user_id.sheets_id, map_user_id.sheets_name, map_user_id.range).then(facebookNameQueried => {
+            //map
+            let mapID = {}
             for (const [index, facebookName] of facebookNameQueried[0].entries()) {
                 if (facebookName !== "") {
                     mapID[facebookName] = index
                 }
             }
             console.log(mapID)
+            return mapID
+        }))
+        // 2. read from Sheets first to ignore existed value
+        queue.push(readSpreadsheetsData(sheets, main_spreadsheets.sheets_id, main_spreadsheets.sheets_name, main_spreadsheets.range))
 
-            //read from Sheets first to ignore existed value
-            return readSpreadsheetsData(sheets, sheets_id, sheets_name, range).then(allUser => {
-                // remap user from facebook name to id
-                let idCf = listUserCf.map((e) => mapID[e])
-
-                let newCf = null
-
-                let notCfYetInSheet = []
-                if (allUser !== undefined) { //null check
-                    console.log(allUser[0]);
-                    for (const [index, value] of allUser[0].entries()) {
-                        if (value === "") {
-                            notCfYetInSheet.push(index)
-                        }
+        return Promise.all(queue)
+            .then(([mapID, allUser]) => {
+            // remap user from facebook name to id
+            let idCf = listUserCf.map((e) => mapID[e])
+            let newCf = null
+            let notCfYetInSheet = []
+            if (allUser !== undefined) { //null check
+                console.log(allUser[0]);
+                for (const [index, value] of allUser[0].entries()) {
+                    if (value === "") {
+                        notCfYetInSheet.push(index)
                     }
-                    console.log(notCfYetInSheet);
-
-                    // find the intersection between 2 array: @idCf and @notCfYetInSheet
-                    newCf = idCf.filter(x => notCfYetInSheet.includes(x));
-                } else {
-                    newCf = idCf
                 }
-                let values = convertUserCfToWriteableTime(newCf, peopleCount);
+                console.log(notCfYetInSheet);
 
-                return sheets.spreadsheets.values.update({
-                    spreadsheetId: sheets_id,
-                    range: `${sheets_name}!${range}`,
-                    valueInputOption: 'USER_ENTERED',
-                    resource: {
-                        // majorDimension: "COLUMNS",
-                        values: values
-                    }
-                }, (err, res) => {
-                    if (err) return console.log('The API returned an error: ' + err);
-                    const rows = res.data;
-                    console.log('rows: ');
-                    console.log(rows)
-                    return rows
-                })
-            })
-        }).catch(error => console.log(error));
+                // find the intersection between 2 array: @idCf and @notCfYetInSheet
+                newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+            } else {
+                newCf = idCf
+            }
+            let values = convertUserCfToWriteableTime(newCf, peopleCount);
+            return updateSpreadsheetsData(sheets, main_spreadsheets, values);
+        })
     })
 }
 
-
-module.exports = { modifySpreadsheet };
+module.exports = {modifySpreadsheet};

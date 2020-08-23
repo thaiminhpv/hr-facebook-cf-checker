@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { google } = require('googleapis');
+const {google} = require('googleapis');
 const database = require('../database/tokenDAO');
 
 // const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']; //read-only
@@ -10,20 +10,23 @@ const LINK_AUTH_PATH = './resources/linkOAuth2.json'
 let authentication = null
 let pending_callback = null
 
-async function callAPI(callback) {
-    fs.readFile('./resources/client_secret.json', (err, content) => {
-        if (err) return console.log('Error loading client secret file:', err);
-        return authorize(JSON.parse(content), callback).catch(err => {
-            console.log('error from here - callAPI 17: ');
-            console.log(err)
+/**
+ * call API
+ * @param callback {Promise<*>}
+ * @returns {Promise<*>}
+ */
+function getAuth(callback) {
+    return new Promise((resolve, reject) => {
+        fs.readFile('./resources/client_secret.json', (err, content) => {
+            if (err) reject(new Error('Error loading client secret file:', err));
+            return authorize(JSON.parse(content), callback)
         });
-    });
+    })
 }
 
 function authorize(credentials, callback) {
-    const { client_secret, client_id, redirect_uris } = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
+    const {client_secret, client_id, redirect_uris} = credentials.web;
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
     authentication = oAuth2Client
 
@@ -57,14 +60,15 @@ function saveCodeToLocal(oAuth2Client, callback) {
     pending_callback = callback
     return database.setLinkAuth(JSON.stringify(authUrl)).then(response => {
         console.log(response)
-        return console.log(`authUrl stored to fire-store, which is ${authUrl}
+        console.log(`authUrl stored to fire-store, which is ${authUrl}
         Go to /link-auth to get link`);
+        return response
     })
 }
 
 function getTokenFromCode(code) {
     authentication.getToken(code, (err, token) => {
-        if (err) return console.error('Error while trying to retrieve access token', err);
+        if (err) return new Error('Error while trying to retrieve access token', err);
         authentication.setCredentials(token);
         // Store the token to disk for later program executions
         database.setToken(JSON.stringify(token)).then(response => {
@@ -76,4 +80,4 @@ function getTokenFromCode(code) {
     })
 }
 
-module.exports = { callAPI, getTokenFromCode }
+module.exports = {getAuth, getTokenFromCode}
