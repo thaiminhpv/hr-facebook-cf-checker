@@ -1,5 +1,6 @@
 const {getAuth} = require('./OAuth2-sheet');
 const {google} = require('googleapis');
+const {setToken} = require('../database/tokenDAO');
 
 /**
  * @source https://stackoverflow.com/a/1050782/11806050
@@ -44,7 +45,7 @@ function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
             range: `${sheets_name}!${range}`,
             majorDimension: "COLUMNS",
         }, (err, res) => {
-            if (err) return reject(new Error('The API returned an error: ' + err))
+            if (err) return reject(err)
             const rows = res.data.values;
             return resolve(rows);
         });
@@ -101,27 +102,32 @@ function modifySpreadsheet(listUserCf) {
 
         return Promise.all(queue)
             .then(([mapID, allUser]) => {
-            // remap user from facebook name to id
-            let idCf = listUserCf.map((e) => mapID[e])
-            let newCf = null
-            let notCfYetInSheet = []
-            if (allUser !== undefined) { //null check
-                console.log(allUser[0]);
-                for (const [index, value] of allUser[0].entries()) {
-                    if (value === "") {
-                        notCfYetInSheet.push(index)
+                // remap user from facebook name to id
+                let idCf = listUserCf.map((e) => mapID[e])
+                let newCf = null
+                let notCfYetInSheet = []
+                if (allUser !== undefined) { //null check
+                    console.log(allUser[0]);
+                    for (const [index, value] of allUser[0].entries()) {
+                        if (value === "") {
+                            notCfYetInSheet.push(index)
+                        }
                     }
-                }
-                console.log(notCfYetInSheet);
+                    console.log(notCfYetInSheet);
 
-                // find the intersection between 2 array: @idCf and @notCfYetInSheet
-                newCf = idCf.filter(x => notCfYetInSheet.includes(x));
-            } else {
-                newCf = idCf
-            }
-            let values = convertUserCfToWriteableTime(newCf, peopleCount);
-            return updateSpreadsheetsData(sheets, main_spreadsheets, values);
-        })
+                    // find the intersection between 2 array: @idCf and @notCfYetInSheet
+                    newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+                } else {
+                    newCf = idCf
+                }
+                let values = convertUserCfToWriteableTime(newCf, peopleCount);
+                return updateSpreadsheetsData(sheets, main_spreadsheets, values);
+            }).catch(error => {
+                console.log('token timed out')
+                if (error.message === 'No refresh token is set.')
+                    return setToken(null).then(response => modifySpreadsheet(listUserCf))
+                return error
+            })
     })
 }
 
