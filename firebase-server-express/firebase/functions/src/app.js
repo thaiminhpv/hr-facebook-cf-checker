@@ -8,6 +8,11 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
+
 app.get('/', (req, res) => {
     console.log('unexpected GET request')
     console.log(req.query)
