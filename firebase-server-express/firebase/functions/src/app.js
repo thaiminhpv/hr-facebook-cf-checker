@@ -72,10 +72,19 @@ app.get('/injection/inject', (req, res) => {
 })
 
 app.get('/config', (req, res, next) => {
-    res.render('config', {
-        data: require('../resources/config.json'),
-        status: req.query.status
-    })
+    database.getLinkAuth().then(link => {
+        console.log(link)
+        return res.render('config', {
+            data: require('../resources/config.json'),
+            status: link === null ? req.query.status : 'token timed out'
+        })
+    }).catch(error => {
+        console.log(error)
+        res.render('config', {
+            data: require('../resources/config.json'),
+            status: error.message
+        })
+    });
 })
 
 app.post('/config', ((req, res, next) => {
