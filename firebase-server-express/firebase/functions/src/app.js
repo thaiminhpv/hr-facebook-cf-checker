@@ -2,14 +2,16 @@ const express = require('express');
 const {modifySpreadsheet} = require('./spreadsheets-api/rest-api-sender');
 const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
 const database = require('./database/tokenDAO');
-const changeConfigFile = require('./database/fileManager')
+const {changeConfigFile, readRawFile} = require('./database/fileManager')
 
 const app = express();
+
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     console.log('unexpected GET request')
     console.log(req.query)
-    res.send("unexpected GET successfully")
+    res.redirect('/config');
 })
 
 // get data from facebook
@@ -62,7 +64,7 @@ app.post('/', (req, res) => {
 
 // -------------GET FILE --------------
 app.get('/injection/caller', (req, res) => {
-    res.sendfile('./resources/browser-inject-js/caller.js')
+    res.sendfile('./resources/browser-inject-js/caller.html')
 })
 
 app.get('/injection/inject', (req, res) => {
@@ -70,15 +72,22 @@ app.get('/injection/inject', (req, res) => {
 })
 
 app.get('/config', (req, res, next) => {
-    //TODO: setup ajax
-    res.sendfile('./resources/UI/config.html');
+    res.render('config', {
+        data: require('../resources/config.json'),
+        status: req.query.status
+    })
 })
 
-app.put('/config', ((req, res, next) => {
+app.post('/config', ((req, res, next) => {
     console.log('post request')
     console.log(req.body);
-    changeConfigFile(req.body);
-    res.sendfile('./resources/config.json')
+    try {
+        changeConfigFile(req.body);
+        res.redirect('/config?status=done')
+    } catch (e) {
+        console.log(e)
+        res.redirect('/config?status=fail')
+    }
 }))
 
 module.exports = app;

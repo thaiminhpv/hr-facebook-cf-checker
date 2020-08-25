@@ -1,5 +1,21 @@
 const fs = require('fs');
 
+/**
+ * @param path
+ * @return {Promise}
+ */
+function readRawFile(path) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path, (err, data) => {
+            if (err === null) {
+                resolve(data)
+            } else {
+                reject(err)
+            }
+        })
+    })
+}
+
 function changeConfigFile({main_sheet_id, main_sheet_name, main_range, map_sheet_id, map_sheet_name, map_range}) {
     let configFile = require('../../resources/config.json');
     //note: we don't need API_key anymore
@@ -17,4 +33,4 @@ function changeConfigFile({main_sheet_id, main_sheet_name, main_range, map_sheet
     fs.writeFileSync('./resources/config.json', JSON.stringify(configFile));
 }
 
-module.exports = changeConfigFile;
+module.exports = {changeConfigFile, readRawFile}
