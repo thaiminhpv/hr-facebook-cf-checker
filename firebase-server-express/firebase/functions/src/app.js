@@ -2,7 +2,7 @@ const express = require('express');
 const {modifySpreadsheet} = require('./spreadsheets-api/rest-api-sender');
 const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
 const database = require('./database/tokenDAO');
-const fs = require('fs');
+const changeConfigFile = require('./database/fileManager')
 
 const app = express();
 
@@ -70,33 +70,15 @@ app.get('/injection/inject', (req, res) => {
 })
 
 app.get('/config', (req, res, next) => {
-    //TODO: setup reactjs to send current settings to client
+    //TODO: setup ajax
     res.sendfile('./resources/UI/config.html');
 })
 
-app.post('/config', ((req, res, next) => {
+app.put('/config', ((req, res, next) => {
     console.log('post request')
     console.log(req.body);
     changeConfigFile(req.body);
     res.sendfile('./resources/config.json')
 }))
-
-function changeConfigFile({main_sheet_id, main_sheet_name, main_range, map_sheet_id, map_sheet_name, map_range}) {
-    let configFile = require('../resources/config.json');
-    //note: we don't need API_key anymore
-    configFile.main_spreadsheets = {
-        sheets_id: main_sheet_id,
-        sheets_name: main_sheet_name,
-        range: main_range
-    }
-    configFile.map_user_id = {
-        sheets_id: map_sheet_id,
-        sheets_name: map_sheet_name,
-        range: map_range
-    }
-    console.log(configFile)
-    fs.writeFileSync('./resources/config.json', JSON.stringify(configFile));
-}
-
 
 module.exports = app;
