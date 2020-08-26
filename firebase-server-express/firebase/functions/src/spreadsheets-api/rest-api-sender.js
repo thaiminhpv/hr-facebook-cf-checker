@@ -79,7 +79,6 @@ function updateSpreadsheetsData(sheets, main_spreadsheets, values) {
  */
 function modifySpreadsheet(listUserCf) {
     const {main_spreadsheets, map_user_id} = require('../../resources/config.json');
-    const peopleCount = 39;
 
     return getAuth((auth) => {
         const sheets = google.sheets({version: 'v4', auth});
@@ -120,7 +119,7 @@ function modifySpreadsheet(listUserCf) {
                 } else {
                     newCf = idCf
                 }
-                let values = convertUserCfToWriteableTime(newCf, peopleCount);
+                let values = convertUserCfToWriteableTime(newCf, parseInt(map_user_id.people_count));
                 return updateSpreadsheetsData(sheets, main_spreadsheets, values);
             }).catch(error => {
                 console.log('token timed out')

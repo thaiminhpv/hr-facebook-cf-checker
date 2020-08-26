@@ -11,6 +11,7 @@
   "map_user_id": {
     "sheets_id": "1eWVXODuj6-hcppcancwgqw5yuyrbxqLzR4RhoZZ7xBE",
     "sheets_name": "MapID",
-    "range": "C1:C39"
+    "range": "C1:C39",
+    "people_count": 14
   }
 }
