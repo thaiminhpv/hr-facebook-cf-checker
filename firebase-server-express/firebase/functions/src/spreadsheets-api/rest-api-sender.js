@@ -30,22 +30,27 @@ function getDate() {
  * @returns 2-dimensional array
  */
 function convertUserCfToWriteable(array, peopleCount, mode) {
-    //TODO: fix thuật toán adapt cho số array > peopleCount
     let write = ''
     if (mode === 'share' || mode === 'react') {
         write = 'x';
+        let values = [];
+        for (let i = 0; i < peopleCount; i++) {
+            values.push(array.includes(i) ? [write] : [])
+        }
+        console.log(values)
+        return values;
     } else if (mode === 'cmt') {
-        //TODO: extract cmt frequency here
-        write = '3/5';
+        let map = array.map((e) => e[0])
+        console.log(map)
+        let values = [];
+        for (let i = 0; i < peopleCount; i++) {
+            values.push(map.includes(i) ? [array[map.indexOf(i)][1]] : [])
+        }
+        console.log(values)
+        return values;
     } else {
-        write = getDate();
+        throw new Error('unexpected mode')
     }
-    let values = [];
-    for (let i = 0; i < peopleCount; i++) {
-        values.push(array.includes(i) ? [write] : [])
-    }
-    console.log(values)
-    return values;
 }
 
 function readSpreadsheetsData(sheets, sheets_id, sheets_name, range) {
@@ -106,24 +111,31 @@ function modifySpreadsheet(listUserCf, mode) {
 
         return Promise.all(queue)
             .then(([mapID, allUser]) => {
-                // remap user from facebook name to id
-                let idCf = listUserCf.filter((e) => Object.keys(mapID).includes(e)).map((e) => mapID[e])
-                console.log(idCf)
-                let newCf = null
-                let notCfYetInSheet = []
-                if (allUser !== undefined) { //null check
-                    console.log(allUser[0]);
-                    for (const [index, value] of allUser[0].entries()) {
-                        if (value === "") {
-                            notCfYetInSheet.push(index)
+                let newCf = null;
+                if (mode === 'share' || mode === 'react') {
+                    // remap user from facebook name to id
+                    let idCf = listUserCf.filter((e) => Object.keys(mapID).includes(e)).map((e) => mapID[e]);
+                    console.log(idCf);
+                    let notCfYetInSheet = [];
+                    if (allUser !== undefined) { //null check
+                        console.log(allUser[0]);
+                        for (const [index, value] of allUser[0].entries()) {
+                            if (value === "") {
+                                notCfYetInSheet.push(index)
+                            }
                         }
-                    }
-                    console.log(notCfYetInSheet);
+                        console.log(notCfYetInSheet);
 
-                    // find the intersection between 2 array: @idCf and @notCfYetInSheet
-                    newCf = idCf.filter(x => notCfYetInSheet.includes(x));
-                } else {
-                    newCf = idCf
+                        // find the intersection between 2 array: @idCf and @notCfYetInSheet
+                        newCf = idCf.filter(x => notCfYetInSheet.includes(x));
+                    } else {
+                        newCf = idCf
+                    }
+                } else if (mode === 'cmt') {
+                    // remap user from facebook name to id
+                    newCf = listUserCf
+                        .filter((e) => Object.keys(mapID).includes(e[0]))
+                        .map((e) => [mapID[e[0]], e[1]]) //cmt cần được update liên tục -> không cần check cũ
                 }
                 let values = convertUserCfToWriteable(newCf, parseInt(map_user_id.people_count), mode);
                 return updateSpreadsheetsData(sheets, main_spreadsheets, values);

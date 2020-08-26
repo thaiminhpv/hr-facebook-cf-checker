@@ -15,6 +15,7 @@ function atClient() {
 async function openMinimized() {
     while ([...document.getElementsByClassName('touchable primary')].filter((e) => e.innerText === "See More…")[0] !== undefined) {
         [...document.getElementsByClassName('touchable primary')].filter((e) => e.innerText === "See More…")[0].click();
+        console.log("expanding...")
         await sleep(3000);
     }
 }
