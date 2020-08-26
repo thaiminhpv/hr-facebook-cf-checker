@@ -29,6 +29,7 @@ function getDate() {
  * @returns 2-dimensional array
  */
 function convertUserCfToWriteableTime(array, peopleCount) {
+    //TODO: fix thuật toán adapt cho số array > peopleCount
     const today = getDate();
     let values = []
     for (let i = 0; i < peopleCount; i++) {

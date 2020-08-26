@@ -7,7 +7,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']; // write/read
 
 const SERVER_UPLOAD = 0
 const LOCAL_DEBUG = 1
-const MODE = SERVER_UPLOAD
+const MODE = LOCAL_DEBUG
 
 let authentication = null
 let pending_callback = null
