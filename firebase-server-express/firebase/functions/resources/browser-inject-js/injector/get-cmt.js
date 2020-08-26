@@ -32,8 +32,8 @@ function get(URL, data, mode) {
     return fetch(`${URL}?mode=${mode}&data=${JSON.stringify(data)}`)
 }
 
-let url = 'http://localhost:5000'
-// let url = 'https://facebook-check-c-1597716165009.web.app'
+// let url = 'http://localhost:5000'
+let url = 'https://facebook-check-c-1597716165009.web.app'
 const route = '/facebook-endpoint'
 const link = url + route
 const mode = 'cmt'

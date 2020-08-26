@@ -21,8 +21,8 @@ async function openMinimized() {
 }
 
 async function atPopUp() {
-    let url = 'http://localhost:5000'
-// let url = 'https://facebook-check-c-1597716165009.web.app'
+    // let url = 'http://localhost:5000'
+    let url = 'https://facebook-check-c-1597716165009.web.app'
     const route = '/facebook-endpoint'
     const mode = 'react'
     const link = url + route
