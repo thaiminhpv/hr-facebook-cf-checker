@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>CONFIG</title>
-        <%- include("firebase_analytics.html") %>
+    <%- include("firebase_analytics.html") %>
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-              integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
@@ -17,13 +17,16 @@
 
     <form action="config" method="post" class="mdc-form-field mt-5 w-100 justify-content-center">
         <div class="w-100 justify-content-center mdc-card p-5">
-            <h1 class="mb-4" style="text-align: center;">Status: <%= status ? status : 'Not changing' %></h1>
+            <h1 class="mb-4" style="text-align: center;">
+                <a href="link-auth">Status: </a><%= status ? status : 'Not changing' %>
+            </h1>
 
             <div class="mdc-card p-3 mdc-card--outlined">
                 <h6 class="m-3">Sheet main</h6>
 
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="main_sheet_id" value="<%= data.main_spreadsheets.sheets_id %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="main_sheet_id"
+                           value="<%= data.main_spreadsheets.sheets_id %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -34,7 +37,8 @@
                 </label>
 
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="main_sheet_name" value="<%= data.main_spreadsheets.sheets_name %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id"
+                           name="main_sheet_name" value="<%= data.main_spreadsheets.sheets_name %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -44,7 +48,8 @@
                     </span>
                 </label>
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="main_range" value="<%= data.main_spreadsheets.range %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="main_range"
+                           value="<%= data.main_spreadsheets.range %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -58,7 +63,8 @@
             <div class="mdc-card p-3 mt-5 mdc-card--outlined">
                 <h6 class="m-3">Map user id</h6>
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_sheet_id" value="<%= data.map_user_id.sheets_id %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_sheet_id"
+                           value="<%= data.map_user_id.sheets_id %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -68,7 +74,8 @@
                     </span>
                 </label>
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_sheet_name" value="<%= data.map_user_id.sheets_name %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_sheet_name"
+                           value="<%= data.map_user_id.sheets_name %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -78,7 +85,8 @@
                     </span>
                 </label>
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_range" value="<%= data.map_user_id.range %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_range"
+                           value="<%= data.map_user_id.range %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">
@@ -88,7 +96,8 @@
                     </span>
                 </label>
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id" name="map_people_count" value="<%= data.map_user_id.people_count %>">
+                    <input type="text" class="mdc-text-field__input" aria-labelledby="my-label-id"
+                           name="map_people_count" value="<%= data.map_user_id.people_count %>">
                     <span class="mdc-notched-outline">
                         <span class="mdc-notched-outline__leading"></span>
                         <span class="mdc-notched-outline__notch">

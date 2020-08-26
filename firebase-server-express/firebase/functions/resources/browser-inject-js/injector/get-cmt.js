@@ -32,13 +32,16 @@ function get(URL, data, mode) {
     return fetch(`${URL}?mode=${mode}&data=${JSON.stringify(data)}`)
 }
 
-// let url = 'http://localhost:5000'
-let url = 'https://facebook-check-c-1597716165009.web.app'
-const route = '/facebook-endpoint'
-const link = url + route
-const mode = 'cmt'
+function atClient() {
+    window.open(window.location.href.replace('www', 'm'), '__blank')
+}
 
-async function run() {
+async function atPopUp() {
+    // let url = 'http://localhost:5000'
+    let url = 'https://facebook-check-c-1597716165009.web.app'
+    const route = '/facebook-endpoint'
+    const link = url + route
+    const mode = 'cmt'
     await openAllMinimized();
     console.log("all opened, sending data...")
     const allCfUser = getAllCfUser();
@@ -49,5 +52,3 @@ async function run() {
     }))
 }
 
-run().then((response) => console.log('Done!')).catch(error => console.log('error: ', error));
-console.log(`Go to ${url}/link-auth to authentication`)

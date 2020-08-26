@@ -6,18 +6,18 @@ function get(URL, data, mode) {
     return fetch(`${URL}?mode=${mode}&data=${JSON.stringify(data)}`)
 }
 
-function atClient() {
-    let shareLink = 'https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier='
-    let postID = window.location.href.match(/\/(\d+)/)[1]
-    window.open(shareLink + postID, '__blank')
-}
-
 async function openMinimized() {
     while ([...document.getElementsByClassName('touchable primary')].filter((e) => e.innerText === "See More…")[0] !== undefined) {
         [...document.getElementsByClassName('touchable primary')].filter((e) => e.innerText === "See More…")[0].click();
         console.log("expanding...")
         await sleep(3000);
     }
+}
+
+function atClient() {
+    let shareLink = 'https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier='
+    let postID = window.location.href.match(/\/(\d+)/)[1]
+    window.open(shareLink + postID, '__blank')
 }
 
 async function atPopUp() {

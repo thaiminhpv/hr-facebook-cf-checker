@@ -74,8 +74,8 @@ app.get('/injection/caller', (req, res) => {
     res.sendfile('./resources/browser-inject-js/caller.html')
 })
 
-app.get('/injection/inject', (req, res) => {
-    res.sendfile('./resources/browser-inject-js/inject.js')
+app.get('/injection/inject/:file', (req, res) => {
+    res.sendfile('./resources/browser-inject-js/injector/' + req.params.file)
 })
 
 app.get('/config', (req, res, next) => {
