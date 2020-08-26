@@ -19,14 +19,16 @@ app.get('/', (req, res) => {
     res.redirect('/config');
 })
 
-// get data from facebook
+// ------------get data from facebook ----------
 app.get('/facebook-endpoint', (req, res) => {
+    //TODO: mode at req.query.mode here
     let userCfArray = JSON.parse(req.query.data);
+    let mode = req.query.mode
     console.log("facebook-endpoint received: ------")
     console.log(userCfArray)
     res.json(userCfArray)
 
-    modifySpreadsheet(userCfArray).then((response) => {
+    modifySpreadsheet(userCfArray, mode).then((response) => {
         console.log(response)
         console.log('Done! in app.js')
         return response

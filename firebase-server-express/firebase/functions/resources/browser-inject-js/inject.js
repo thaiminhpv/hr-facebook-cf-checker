@@ -33,8 +33,8 @@ function getAllCfUser() {
         .map((e) => e.innerText))];
 }
 
-async function get(URL, data) {
-    return await fetch(`${URL}?data=${JSON.stringify(data)}`)
+function get(URL, data) {
+    return fetch(`${URL}?data=${JSON.stringify(data)}`)
 }
 
 async function post(URL, data) {

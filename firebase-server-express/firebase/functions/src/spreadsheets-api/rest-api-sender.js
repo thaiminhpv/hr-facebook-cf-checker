@@ -26,14 +26,23 @@ function getDate() {
  * -> chỉ lấy ra một cái array chứa index của những ô cần điền ngày giờ
  * @param array
  * @param peopleCount
+ * @param mode
  * @returns 2-dimensional array
  */
-function convertUserCfToWriteableTime(array, peopleCount) {
+function convertUserCfToWriteable(array, peopleCount, mode) {
     //TODO: fix thuật toán adapt cho số array > peopleCount
-    const today = getDate();
-    let values = []
+    let write = ''
+    if (mode === 'share' || mode === 'react') {
+        write = 'x';
+    } else if (mode === 'cmt') {
+        //TODO: extract cmt frequency here
+        write = '3/5';
+    } else {
+        write = getDate();
+    }
+    let values = [];
     for (let i = 0; i < peopleCount; i++) {
-        values.push(array.includes(i) ? [today] : [])
+        values.push(array.includes(i) ? [write] : [])
     }
     console.log(values)
     return values;
@@ -72,13 +81,7 @@ function updateSpreadsheetsData(sheets, main_spreadsheets, values) {
     })
 }
 
-/**
- * Usable
- * @version v4
- * @param listUserCf
- * @returns {Promise<*>}
- */
-function modifySpreadsheet(listUserCf) {
+function modifySpreadsheet(listUserCf, mode) {
     const {main_spreadsheets, map_user_id} = require('../../resources/config.json');
 
     return getAuth((auth) => {
@@ -95,6 +98,7 @@ function modifySpreadsheet(listUserCf) {
                 }
             }
             console.log(mapID)
+            console.log(Object.keys(mapID))
             return mapID
         }))
         // 2. read from Sheets first to ignore existed value
@@ -103,7 +107,8 @@ function modifySpreadsheet(listUserCf) {
         return Promise.all(queue)
             .then(([mapID, allUser]) => {
                 // remap user from facebook name to id
-                let idCf = listUserCf.map((e) => mapID[e])
+                let idCf = listUserCf.filter((e) => Object.keys(mapID).includes(e)).map((e) => mapID[e])
+                console.log(idCf)
                 let newCf = null
                 let notCfYetInSheet = []
                 if (allUser !== undefined) { //null check
@@ -120,10 +125,11 @@ function modifySpreadsheet(listUserCf) {
                 } else {
                     newCf = idCf
                 }
-                let values = convertUserCfToWriteableTime(newCf, parseInt(map_user_id.people_count));
+                let values = convertUserCfToWriteable(newCf, parseInt(map_user_id.people_count), mode);
                 return updateSpreadsheetsData(sheets, main_spreadsheets, values);
             }).catch(error => {
                 console.log('token timed out')
+                console.log(error)
                 if (error.message === 'No refresh token is set.')
                     return setToken(null).then(response => modifySpreadsheet(listUserCf))
                 return error
