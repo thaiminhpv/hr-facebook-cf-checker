@@ -17,5 +17,13 @@ function atPopUp() {
     let userShare = [...document.querySelectorAll('._4mo')].map(e => e.innerText)
     get(link, userShare, mode).then(response => {
         console.log(response)
+        return response
     }).catch(error => console.error(error))
+}
+
+// eslint-disable-next-line no-alert
+if (parseInt(prompt(`Origin or Pop-up? 1:Origin 2:Pop-up`)) === 1) {
+    atClient()
+} else {
+    atPopUp().then(response => console.log(response)).catch(error => console.error(error))
 }

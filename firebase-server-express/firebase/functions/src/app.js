@@ -3,8 +3,12 @@ const {modifySpreadsheet} = require('./spreadsheets-api/rest-api-sender');
 const {getTokenFromCode} = require('./spreadsheets-api/OAuth2-sheet');
 const database = require('./database/tokenDAO');
 const {changeConfigFile, readRawFile} = require('./database/fileManager')
+// const bodyParser = require('body-parser')
 
 const app = express();
+
+// app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
 
@@ -12,6 +16,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     next();
 });
+
 
 app.get('/', (req, res) => {
     console.log('unexpected GET request')
@@ -21,9 +26,22 @@ app.get('/', (req, res) => {
 
 // ------------get data from facebook ----------
 app.get('/facebook-endpoint', (req, res) => {
-    //TODO: mode at req.query.mode here
     let userCfArray = JSON.parse(req.query.data);
     let mode = req.query.mode
+    console.log("facebook-endpoint received: ------")
+    console.log(userCfArray)
+    res.json(userCfArray)
+
+    modifySpreadsheet(userCfArray, mode).then((response) => {
+        console.log(response)
+        console.log('Done! in app.js')
+        return response
+    }).catch(error => console.log(error));
+})
+
+app.post('/facebook-endpoint', (req, res) => {
+    let userCfArray = JSON.parse(req.body.data);
+    let mode = req.body.mode
     console.log("facebook-endpoint received: ------")
     console.log(userCfArray)
     res.json(userCfArray)

@@ -1,17 +1,1 @@
-{
-  "main_spreadsheets": {
-    "sheets_id": "1KNhrmN6DKUIGzB_WKG9l1J4DeMz1cUDBFxdq3eF-OKs",
-    "sheets_name": "HC",
-    "range": "H3:H16"
-  },
-  "facebook": {
-    "access_token": "EAAJIA7bW13YBAPRGJO4B2wyCYhf4wypUBe1oFqUBrZAcWafgTWZAT7dyVTksRZBlZC9MuDzkATLR2vlUHO1ag7kgKvxliIb5fDFSoZAImbCGEFw9hOjjfcPZBVZCdo9sVn14pSuZCB0NT8lR5kxl7NzJNrntBrFZChE7Bg1prrtVtNp5TVg8YqL8ZCKfdj4F9ASiSwR1mPCyBR4GcBwGf5N7ZC7gqz2onrXyZBABjQTDZBjjJxwZDZD",
-    "group_id": "155017612502508"
-  },
-  "map_user_id": {
-    "sheets_id": "1Hykkhx-wFIZZ9UEDpTZwle0PY8LqlhrnRNCUtHQIyWk",
-    "sheets_name": "MapID",
-    "range": "C1:C14",
-    "people_count": "14"
-  }
-}
+{"main_spreadsheets":{"sheets_id":"1KNhrmN6DKUIGzB_WKG9l1J4DeMz1cUDBFxdq3eF-OKs","sheets_name":"HC","range":"F3:F16"},"facebook":{"access_token":"EAAJIA7bW13YBAPRGJO4B2wyCYhf4wypUBe1oFqUBrZAcWafgTWZAT7dyVTksRZBlZC9MuDzkATLR2vlUHO1ag7kgKvxliIb5fDFSoZAImbCGEFw9hOjjfcPZBVZCdo9sVn14pSuZCB0NT8lR5kxl7NzJNrntBrFZChE7Bg1prrtVtNp5TVg8YqL8ZCKfdj4F9ASiSwR1mPCyBR4GcBwGf5N7ZC7gqz2onrXyZBABjQTDZBjjJxwZDZD","group_id":"155017612502508"},"map_user_id":{"sheets_id":"1Hykkhx-wFIZZ9UEDpTZwle0PY8LqlhrnRNCUtHQIyWk","sheets_name":"MapID","range":"C1:C14","people_count":"14"}}

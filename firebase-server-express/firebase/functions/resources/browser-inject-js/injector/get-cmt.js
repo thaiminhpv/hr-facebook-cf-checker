@@ -20,6 +20,7 @@ async function openAllMinimized() {
     while (document.getElementsByClassName('_108_')[0] !== undefined) {
         document.getElementsByClassName('_108_')[0].click()
         console.log("expanding...")
+        // eslint-disable-next-line no-await-in-loop
         await sleep(3000);
     }
 }
@@ -52,3 +53,9 @@ async function atPopUp() {
     }))
 }
 
+// eslint-disable-next-line no-alert
+if (parseInt(prompt(`Origin or Pop-up? 1:Origin 2:Pop-up`)) === 1) {
+    atClient()
+} else {
+    atPopUp().then(response => console.log(response)).catch(error => console.error(error))
+}
