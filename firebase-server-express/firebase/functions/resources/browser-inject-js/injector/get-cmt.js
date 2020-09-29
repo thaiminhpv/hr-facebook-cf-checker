@@ -26,7 +26,7 @@ async function openAllMinimized() {
 }
 
 function getAllCfUser() {
-    return countFrequency([...document.getElementsByClassName('_2b05')].map((e) => e.innerText))
+    return countFrequency([...document.getElementsByClassName('cwj9ozl2 tvmbv18p')[0].getElementsByClassName('d2edcug0 hpfvmrgz qv66sw1b c1et5uql rrkovp55 a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb mdeji52x e9vueds3 j5wam9gi lrazzd5p oo9gr5id')].map((e) => e.innerText))
 }
 
 function get(URL, data, mode) {
