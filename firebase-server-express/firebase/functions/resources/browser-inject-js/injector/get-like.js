@@ -28,7 +28,14 @@
 
     function atClient() {
         let shareLink = 'https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier='
-        let postID = window.location.href.match(/\/(\d+)/)[1]
+        let currentURL = window.location.href
+        let postID;
+        if (currentURL.match(/story_fbid=(\d+)/)) {
+            postID = currentURL.match(/story_fbid=(\d+)/)[1]
+        } else {
+            postID = currentURL.match(/\/(\d+)/)[1];
+        }
+
         window.open(shareLink + postID, '__blank')
     }
 
