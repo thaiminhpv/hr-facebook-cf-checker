@@ -1,6 +1,14 @@
 # Facebook cf checker automation for Human Resource
+
+This is a simple script to automate the process of checking the Facebook cf checker for the Human Resource department.
+
+First, tampermonkey or chrome-extension will inject script into the page.
+Then, the script will read the data from the page and send it to the server.
+Server will process the data and call Google API to tick results into Google Spreadsheet.
+Server's config can be accessed from /config ([./firebase/functions/views/config.ejs](./firebase/functions/views/config.ejs))
+
 - Google API
-- Firebase
+- Deploy to Firebase
 - injector (use tampermonkey or chrome-extension)
 ## NodeJS
 
